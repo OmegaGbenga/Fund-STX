@@ -1,26 +1,98 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Exact Loot Drop / Gumroad-style Palette */
+  --background: #fdf6e3;
+  /* Solarized Base3 (Creamy Beige) */
+  --foreground: #000000;
+
+  --primary: #FFADAD;
+  /* Pastel Red/Pink */
+  --secondary: #9BF6FF;
+  /* Pastel Cyan */
+  --accent: #FDFFB6;
+  /* Pastel Yellow */
+  --tertiary: #BDB2FF;
+  /* Pastel Purple */
+
+  --card-bg: #FFFFFF;
+  --card-border: #000000;
+
+  --shadow-color: #000000;
+
+  --font-heading: var(--font-heading);
+  --font-body: var(--font-body);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-accent: var(--accent);
+  --color-tertiary: var(--tertiary);
+  --color-card-bg: var(--card-bg);
+  --color-card-border: var(--card-border);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-sans: var(--font-body);
+  --font-heading: var(--font-heading);
+
+  --shadow-full: 5px 5px 0px 0px #000000;
+  --shadow-sm: 2px 2px 0px 0px #000000;
+  --shadow-hover: 0px 0px 0px 0px #000000;
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body);
+  min-height: 100vh;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+}
+
+/* Utils */
+.neo-card {
+  background: white;
+  border: 2px solid black;
+  box-shadow: var(--shadow-full);
+  border-radius: 12px;
+}
+
+.neo-button {
+  border: 2px solid black;
+  box-shadow: var(--shadow-full);
+  transition: all 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.neo-button:active {
+  transform: translate(4px, 4px);
+  box-shadow: none;
+}
+
+.neo-input {
+  border: 2px solid black;
+  background: white;
+  box-shadow: var(--shadow-sm);
+  border-radius: 8px;
+  outline: none;
+  font-family: var(--font-body);
+}
+
+.neo-input:focus {
+  background: var(--accent);
+  box-shadow: var(--shadow-full);
+  transform: translate(-1px, -1px);
 }
