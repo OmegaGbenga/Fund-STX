@@ -3,7 +3,7 @@ import { twMerge } from "tailwind-merge";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     children: ReactNode;
-    variant?: "primary" | "secondary" | "accent" | "tertiary";
+    variant?: "primary" | "secondary" | "accent" | "tertiary" | "ghost";
     size?: "sm" | "md" | "lg";
     className?: string;
 }
@@ -23,6 +23,7 @@ export function Button({
         secondary: "bg-[var(--secondary)] text-black hover:bg-[#D0FAFF]",
         accent: "bg-[var(--accent)] text-black hover:bg-[#FEFFD6]",
         tertiary: "bg-[var(--tertiary)] text-black hover:bg-[#DCD6FF]",
+        ghost: "bg-transparent text-black border-2 border-transparent hover:bg-black/5 hover:border-black/10 shadow-none",
     };
 
     const sizes = {
