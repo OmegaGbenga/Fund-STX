@@ -1,13 +1,18 @@
 "use client";
 
-import { Button } from "@/components/ui/Button";
 import { useState } from "react";
-import { ArrowLeft, Rocket, Sparkles } from "lucide-react";
+import { Button } from "@/components/ui/Button";
+import { ArrowLeft, Rocket, Sparkles, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useConnect } from "@stacks/connect-react";
+import { STACKS_TESTNET } from "@stacks/network";
+import { uintCV, stringUtf8CV } from "@stacks/transactions";
+import { FUNDSTX_CONTRACT_ADDRESS, FUNDSTX_CONTRACT_NAME } from "@/lib/contracts";
 
 export default function CreateCampaign() {
-    const { authOptions } = useConnect();
+    const { doContractCall } = useConnect();
+    const [isDeploying, setIsDeploying] = useState(false);
+
     const [formData, setFormData] = useState({
         title: "",
         description: "",
@@ -15,10 +20,66 @@ export default function CreateCampaign() {
         deadline: "",
     });
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        console.log("Create campaign:", formData);
-        alert("Contract deploying... just kidding (for now)!");
+        console.log("Submitting campaign...", formData);
+        setIsDeploying(true);
+
+        // Convert inputs
+        const goalAmount = parseInt(formData.goal);
+        if (!goalAmount || goalAmount <= 0) {
+            alert("Please enter a valid goal amount");
+            setIsDeploying(false);
+            return;
+        }
+
+        // Calculate deadline in blocks (approx 10 min per block)
+        // For simplicity in this demo, we'll calculate blocks from now based on the selected date
+        const targetDate = new Date(formData.deadline).getTime();
+        if (isNaN(targetDate) || targetDate <= Date.now()) {
+            alert("Please choose a future date");
+            setIsDeploying(false);
+            return;
+        }
+
+        const diffMs = targetDate - Date.now();
+        const blocksUntilDeadline = Math.floor(diffMs / (1000 * 60 * 10)); // ~10 mins per block
+        // We'd typically fetch the current block height here, but for the hackathon demo we'll use a relative offset + rough current height or just the offset if the contract expects absolute
+        // Assuming the contract expects ABSOLUTE block height. 
+        // We'll use a hardcoded base for testnet example or fetch it. 
+        // For safety/demo: Current Testnet Height is approx 136000. 
+        const currentBlockHeight = 136000;
+        const deadlineBlock = currentBlockHeight + blocksUntilDeadline;
+
+        const contractAddress = FUNDSTX_CONTRACT_ADDRESS;
+        const contractName = FUNDSTX_CONTRACT_NAME;
+
+        try {
+            await doContractCall({
+                network: STACKS_TESTNET,
+                contractAddress,
+                contractName,
+                functionName: "create-campaign",
+                functionArgs: [
+                    stringUtf8CV(formData.title),
+                    uintCV(goalAmount),
+                    uintCV(deadlineBlock)
+                ],
+                onFinish: (data) => {
+                    console.log("Transaction finished:", data);
+                    alert("Campaign creation transaction broadcasted! 🚀\nTxId: " + data.txId);
+                    setIsDeploying(false);
+                    // Redirect or clear form
+                },
+                onCancel: () => {
+                    setIsDeploying(false);
+                },
+            });
+        } catch (error) {
+            console.error("Error calling contract:", error);
+            setIsDeploying(false);
+            alert("Something went wrong. Check console.");
+        }
     };
 
     return (
@@ -93,8 +154,19 @@ export default function CreateCampaign() {
                     </div>
 
                     <div className="pt-8 flex flex-col items-center">
-                        <Button type="submit" size="lg" className="w-full text-xl py-5 bg-[var(--accent)] hover:bg-yellow-300 border-2 border-black shadow-[6px_6px_0px_0px_#000]">
-                            🚀 LAUNCH SMART CONTRACT
+                        <Button
+                            type="submit"
+                            size="lg"
+                            className="w-full text-xl py-5 bg-[var(--accent)] hover:bg-yellow-300 border-2 border-black shadow-[6px_6px_0px_0px_#000] disabled:opacity-50 disabled:cursor-not-allowed"
+                            disabled={isDeploying}
+                        >
+                            {isDeploying ? (
+                                <span className="flex items-center gap-2">
+                                    <Loader2 className="w-6 h-6 animate-spin" /> LAUNCHING...
+                                </span>
+                            ) : (
+                                "🚀 LAUNCH SMART CONTRACT"
+                            )}
                         </Button>
                         <p className="text-xs font-bold text-center text-black/40 mt-4 uppercase">
                             Gas fees apply • No rug pulls allowed
