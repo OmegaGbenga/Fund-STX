@@ -19,6 +19,7 @@ const outfit = Outfit({
 export const metadata: Metadata = {
   title: "FundStx | Next-Gen Crowdfunding",
   description: "Launch your dreams with stablecoin liquidity on Stacks.",
+  manifest: "/manifest.json",
 };
 
 export default function RootLayout({
