@@ -1,0 +1,12 @@
+{
+    "name": "FundStx",
+    "start_url": "/",
+    "description": "FundStx | Next-Gen Crowdfunding",
+    "icons": [
+        {
+            "src": "/vercel.svg",
+            "sizes": "192x192",
+            "type": "image/svg+xml"
+        }
+    ]
+}

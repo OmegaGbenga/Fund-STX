@@ -9,18 +9,22 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@scure/base": "^2.0.0",
     "@stacks/common": "^7.3.1",
-    "@stacks/connect": "^8.2.4",
-    "@stacks/connect-react": "^23.1.4",
+    "@stacks/connect": "^8.1.9",
+    "@stacks/connect-react": "^23.0.12",
     "@stacks/network": "^7.3.1",
     "@stacks/transactions": "^7.3.1",
+    "c32check": "^2.0.0",
     "clsx": "^2.1.1",
     "framer-motion": "^12.27.5",
     "lucide-react": "^0.562.0",
+    "micro-packed": "^0.8.0",
     "next": "16.1.4",
     "react": "19.2.3",
     "react-dom": "19.2.3",
-    "tailwind-merge": "^3.4.0"
+    "tailwind-merge": "^3.4.0",
+    "viem": "^2.45.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
